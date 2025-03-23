@@ -1,4 +1,19 @@
-<h2>Jamf  <a data-i18n="jamf.recheck" class="btn btn-default btn-xs" href="<?php echo url('module/jamf/recheck_jamf/' . $serial_number);?>"></a>  <span id="jamf_view_in"></span></h2>
+<div id="jamf-tab"></div>
+
+<div id="lister" style="font-size: large; float: right;">
+    <a href="/show/listing/jamf/jamf" title="List">
+        <i class="btn btn-default tab-btn fa fa-list"></i>
+    </a>
+</div>
+<div id="report_btn" style="font-size: large; float: right;">
+    <a href="/show/report/jamf/jamf" title="Report">
+        <i class="btn btn-default tab-btn fa fa-th"></i>
+    </a>
+</div>
+<h2>
+<i class="fa fa-cloud"></i> Jamf  <a id="jamf-recheck" class="btn btn-default btn-sm" href="#"><i class="fa fa-refresh"></i> <span data-i18n="jamf.recheck"></span></a>  <span id="jamf_view_in"></span>
+    <span id="jamf_last_pull" style="color: #bbb; margin-left: 10px; font-size: 10px;"></span>
+</h2>
 
 <div id="jamf-msg" data-i18n="listing.loading" class="col-lg-12 text-center"></div>
 
@@ -7,8 +22,8 @@
 
         <!--Top nav tabs-->
         <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#jamf-inventory" data-i18n="jamf.inventory"></a></li>
-          <li><a data-toggle="tab" href="#jamf-management" data-i18n="jamf.management"></a></li>
+          <li class="active"><a data-toggle="tab" href="#jamf-inventory"><i class="fa fa-archive"></i>&nbsp;&nbsp;<span data-i18n="jamf.inventory"></span></a></li>
+          <li><a data-toggle="tab" href="#jamf-management"><i class="fa fa-cogs"></i>&nbsp;&nbsp;<span data-i18n="jamf.management"></span></a></li>
         </ul>
 
         <!--Top tabs content-->
@@ -412,12 +427,92 @@
 <script>    
 $(document).on('appReady', function(e, lang) {
 
+	// Handle recheck button click
+	$('#jamf-recheck').click(function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var $btn = $(this);
+		var $progress = $('<div class="progress" style="margin-top: 10px; margin-left: 10px; height: 14px !important; width: 130px; display: inline-block; position: relative;"><div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%; background-color: #5cb85c; color: white; font-size: 10px; line-height: 14px !important; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 14px !important;"></div><div style="position: absolute; width: 100%; text-align: center; color: white; font-size: 10px; line-height: 14px !important; pointer-events: none; height: 14px !important;"></div></div>');
+		
+		// Add progress element after the button
+		$btn.after($progress);
+		
+		// Disable button and show initial state
+		$btn.html('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('jamf.pulling_data'));
+		$btn.prop('disabled', true);
+		
+		// Update progress function
+		function updateProgress(percent, message) {
+			$progress.find('.progress-bar').css('width', percent + '%');
+			$progress.find('div:last-child').text(message);
+		}
+		
+		// Simulate progress steps
+		var steps = [
+			{ percent: 0, message: i18n.t('jamf.processing') },
+			{ percent: 15, message: i18n.t('jamf.pulling_data') },
+			{ percent: 30, message: i18n.t('jamf.processing') },
+			{ percent: 45, message: i18n.t('jamf.processing') },
+			{ percent: 60, message: i18n.t('jamf.processing') },
+			{ percent: 75, message: i18n.t('jamf.processing') },
+			{ percent: 90, message: i18n.t('jamf.processing') },
+			{ percent: 100, message: i18n.t('jamf.processing') }
+		];
+		
+		var currentStep = 0;
+		var stepInterval = setInterval(function() {
+			if (currentStep < steps.length) {
+				updateProgress(steps[currentStep].percent, steps[currentStep].message);
+				currentStep++;
+			}
+		}, 1000); // Changed from 500ms to 1000ms (1 second) per step
+		
+		// Make the API call
+		$.ajax({
+			url: appUrl + '/module/jamf/recheck_jamf/' + serialNumber,
+			method: 'GET',
+			dataType: 'json',
+			success: function(response) {
+				clearInterval(stepInterval);
+				if (response.status === 'success') {
+					// Show completion message briefly before reload
+					updateProgress(100, response.message);
+					
+					// Reload after a short delay to show completion
+					setTimeout(function() {
+						window.location.reload();
+					}, 500);
+				} else {
+					// Show error message
+					updateProgress(0, response.message);
+					$btn.prop('disabled', false).html('<i class="fa fa-refresh"></i> ' + i18n.t('jamf.recheck'));
+				}
+			},
+			error: function() {
+				clearInterval(stepInterval);
+				// Show error message
+				updateProgress(0, i18n.t('jamf.error_pulling'));
+				$btn.prop('disabled', false).html('<i class="fa fa-refresh"></i> ' + i18n.t('jamf.recheck'));
+			}
+		});
+		
+		return false;
+	});
+
 	// Get Jamf data
+	$('#jamf-msg').html('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('jamf.pulling_data'));
+	$('#jamf-view').addClass('hide');
+
 	$.getJSON( appUrl + '/module/jamf/get_data/' + serialNumber, function( data ) {
 		if( ! data['jamf_id']){
 			$('#jamf-msg').text(i18n.t('no_data'));
 		}
 		else{
+            // Update last pull time
+            if (data['last_pull_timestamp'] !== null) {
+                $('#jamf_last_pull').html('Last pull: ' + moment(parseInt(data['last_pull_timestamp']) * 1000).fromNow());
+            }
 
 			// Hide
 			$('#jamf-msg').text('');
@@ -427,7 +522,7 @@ $(document).on('appReady', function(e, lang) {
             var jamf_server = "<?php configAppendFile(__DIR__ . '/../config.php'); echo rtrim(conf('jamf_server'), '/'); ?>";
             
             // Generate buttons and tabs
-            $('#jamf_view_in').html('<a class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computers.html?id='+data['jamf_id']+'&o=r&v=inventory"> '+i18n.t("jamf.view_in_jamf")+'</a>'); // View in Jamf button
+            $('#jamf_view_in').html('<a class="btn btn-default btn-sm" target="_blank" href="'+jamf_server+'/computers.html?id='+data['jamf_id']+'&o=r&v=inventory"> '+i18n.t("jamf.view_in_jamf")+'</a>'); // View in Jamf button
             $('#jamf_general_button').html('<i class="fa fa-info-circle"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.general")); // General tab
             $('#jamf_hardware_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("hardware.hardware")); // Hardware tab
             $('#jamf_operatingsystem_button').html('<i class="fa fa-apple"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.operatingsystem")); // Operating System tab
@@ -878,6 +973,13 @@ $(document).on('appReady', function(e, lang) {
 // Make button groups active
 $(".btn-group > .btn").click(function(){
     $(this).addClass("active").siblings().removeClass("active");
+});
+
+// Prevent hash changes when clicking any Jamf tabs
+$('.nav-tabs a, #jamf-inventory .jamf-left a, #jamf-management .jamf-left a, .btn-group > .btn').on('click', function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+    history.pushState(null, null, '#tab_jamf-tab');
 });
 
 </script>

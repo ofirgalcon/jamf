@@ -33,6 +33,7 @@ class Jamf_model extends \Model {
         $this->rs['initial_entry_date_epoch'] = 0;
         $this->rs['last_cloud_backup_date_epoch'] = 0;
         $this->rs['last_enrolled_date_epoch'] = 0;
+        $this->rs['last_pull_timestamp'] = 0;
         $this->rs['distribution_point'] = '';
         $this->rs['sus'] = '';
         $this->rs['netboot_server'] = '';

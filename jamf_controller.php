@@ -310,10 +310,10 @@ class jamf_controller extends Module_controller
         } else {
 
             $jamf = new Jamf_model($incoming_serial);
-            $jamf_status = $jamf->run_jamf_stats();
+            $jamf->run_jamf_stats();
 
             // Check if machine exists in Jamf
-            if ($jamf_status->rs['jamf_id'] == 0 ){
+            if ($jamf->rs['jamf_id'] == 0 ){
                 $out = array("serial"=>$incoming_serial,"status"=>"Machine not found in Jamf!");
             } else {
                 $out = array("serial"=>$incoming_serial,"status"=>"Machine processed");
@@ -333,9 +333,36 @@ class jamf_controller extends Module_controller
         if (authorized_for_serial($serial)) {
             $jamf = new Jamf_model($serial);
             $jamf->run_jamf_stats();
+            
+            // Return success response
+            $response = array(
+                'status' => 'success',
+                'message' => 'Data pulled successfully',
+                'steps' => array(
+                    'computer_data' => true,
+                    'management_data' => true,
+                    'history_data' => true,
+                    'patch_data' => true,
+                    'profiles_data' => true
+                )
+            );
+            
+            // Set proper headers
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
         }
 
-        redirect("clients/detail/$serial#tab_jamf-tab");
+        // Return error response
+        $response = array(
+            'status' => 'error',
+            'message' => 'Not authorized'
+        );
+        
+        // Set proper headers
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
     }
 
     /**
