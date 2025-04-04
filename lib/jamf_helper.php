@@ -281,7 +281,6 @@ class Jamf_helper
             $json = json_decode((string)$jamf_computermanagement_result);
 
             // Computer Management
-            $Jamf_model->policy_logs_history = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
             $Jamf_model->ebooks_management = json_encode($json->computer_management->ebooks); // Encode the ebooks array for processing by the client tab
             $Jamf_model->mac_app_store_apps_management = json_encode($json->computer_management->mac_app_store_apps); // Encode the mac_app_store_apps array for processing by the client tab
             $Jamf_model->managed_preference_profiles_management = json_encode($json->computer_management->managed_preference_profiles); // Encode the managed_preference_profiles array for processing by the client tab
@@ -338,6 +337,37 @@ class Jamf_helper
             // Computer history section
             $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
             $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
+            
+            // Get policy logs from JSON response
+            if (isset($json->computer_history->policy_logs)) {
+                $Jamf_model->policy_logs_history = json_encode($json->computer_history->policy_logs); // Encode the policy logs array for processing by the client tab
+            } else {
+                // Try to get policy logs from XML as a backup method
+                $jamf_history_xml_result = $this->get_jamf_url_xml($url);
+                if ($jamf_history_xml_result) {
+                    $history_xml = simplexml_load_string((string)$jamf_history_xml_result);
+                    if (isset($history_xml->policy_logs)) {
+                        $policy_logs_array = [];
+                        
+                        if (isset($history_xml->policy_logs->policy_log)) {
+                            foreach ($history_xml->policy_logs->policy_log as $log) {
+                                $policy_log = [];
+                                $policy_log['policy_id'] = (string)$log->id;
+                                $policy_log['name'] = (string)$log->name;
+                                $policy_log['date'] = (string)$log->date;
+                                $policy_log['status'] = (string)$log->status;
+                                $policy_logs_array[] = $policy_log;
+                            }
+                        }
+                        
+                        $Jamf_model->policy_logs_history = json_encode($policy_logs_array);
+                    } else {
+                        $Jamf_model->policy_logs_history = "[]"; // Set empty array if no policy logs
+                    }
+                } else {
+                    $Jamf_model->policy_logs_history = "[]"; // Set empty array if no policy logs
+                }
+            }
 
             $Jamf_model->comands_completed = count($json->computer_history->commands->completed); // Count completed commands
             $Jamf_model->comands_pending = count($json->computer_history->commands->pending); // Count pending commands

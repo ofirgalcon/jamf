@@ -24,7 +24,30 @@ else
     # Make sure the cache directory exists
     DIR=$(dirname $0)
     mkdir -p "$DIR/cache"
+    
+    # Check if jamf.txt exists and get its last modification time
+    if [ -f "$DIR/cache/jamf.txt" ]; then
+        last_check=$(cat "$DIR/cache/jamf.txt")
+        # Check if last_check is a valid number
+        if ! [[ "$last_check" =~ ^[0-9]+$ ]]; then
+            echo "Invalid timestamp in jamf.txt, creating new one"
+            date +%s > "$DIR/cache/jamf.txt"
+            exit 0
+        fi
+        current_time=$(date +%s)
+        time_diff=$((current_time - last_check))
+        
+        # Use CHECK value as interval in seconds
+        if [ $time_diff -lt ${CHECK:-86400} ]; then
+            echo "Last Jamf check was less than ${CHECK:-86400} seconds ago. Skipping."
+            exit 0
+        fi
+    else
+        # File doesn't exist, create it with current timestamp
+        date +%s > "$DIR/cache/jamf.txt"
+        exit 0
+    fi
 
-    # Store date in file to trigger Jamf lookup
-    date > "$DIR/cache/jamf.txt"
+    # Store Unix timestamp in file to trigger Jamf lookup
+    date +%s > "$DIR/cache/jamf.txt"
 fi

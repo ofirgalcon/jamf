@@ -11,7 +11,7 @@
     </a>
 </div>
 <h2>
-<i class="fa fa-cloud"></i> Jamf  <a id="jamf-recheck" class="btn btn-default btn-sm" href="#"><i class="fa fa-refresh"></i> <span data-i18n="jamf.recheck"></span></a>  <span id="jamf_view_in"></span>
+<i class="fa fa-cloud"></i> Jamf  <a id="jamf-recheck" class="btn btn-default btn-sm" href="#" title="Refresh Jamf data"><i class="fa fa-refresh"></i> <span data-i18n="jamf.recheck"></span></a>  <span id="jamf_view_in"></span>
     <span id="jamf_last_pull" style="color: #bbb; margin-left: 10px; font-size: 10px;"></span>
 </h2>
 
@@ -22,8 +22,9 @@
 
         <!--Top nav tabs-->
         <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#jamf-inventory"><i class="fa fa-archive"></i>&nbsp;&nbsp;<span data-i18n="jamf.inventory"></span></a></li>
-          <li><a data-toggle="tab" href="#jamf-management"><i class="fa fa-cogs"></i>&nbsp;&nbsp;<span data-i18n="jamf.management"></span></a></li>
+          <li class="active"><a data-toggle="tab" href="#jamf-inventory" title="View inventory information"><i class="fa fa-archive"></i>&nbsp;&nbsp;<span data-i18n="jamf.inventory"></span></a></li>
+          <li><a data-toggle="tab" href="#jamf-management" title="View management information"><i class="fa fa-cogs"></i>&nbsp;&nbsp;<span data-i18n="jamf.management"></span></a></li>
+          <li><a data-toggle="tab" href="#jamf-history" title="View history information"><i class="fa fa-history"></i>&nbsp;&nbsp;<span data-i18n="jamf.history"></span></a></li>
         </ul>
 
         <!--Top tabs content-->
@@ -335,7 +336,7 @@
                 </div>
             </div>
           </div>      
-          <!--Mangement tab-->
+          <!--Management tab-->
           <div id="jamf-management" class="tab-pane">
             <!--Mangement side tabs-->
             <ul class="nav nav-tabs jamf-left">
@@ -420,85 +421,27 @@
                 </div>
             </div>
           </div>
+          <!--History tab-->
+          <div id="jamf-history" class="tab-pane">
+            <!--History side tabs-->
+            <ul class="nav nav-tabs jamf-left">
+              <li class="active" id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-PolicyLogs" id="jamf_policylogs_button"></a></li>
+            </ul>
+            <!--History side tabs content-->
+            <div class="tab-content jamf-tab-content">
+                <!--PolicyLogs tab content-->
+                <div id="Jamf-PolicyLogs" class="tab-pane in active">
+                  <!--PolicyLogs table-->
+                  <div id="Jamf-PolicyLogs-Table"></div>
+                </div>
+            </div>
+          </div>
         </div>
     </div>
 </div>
 
 <script>    
 $(document).on('appReady', function(e, lang) {
-
-	// Handle recheck button click
-	$('#jamf-recheck').click(function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		
-		var $btn = $(this);
-		var $progress = $('<div class="progress" style="margin-top: 10px; margin-left: 10px; height: 14px !important; width: 130px; display: inline-block; position: relative;"><div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%; background-color: #5cb85c; color: white; font-size: 10px; line-height: 14px !important; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 14px !important;"></div><div style="position: absolute; width: 100%; text-align: center; color: white; font-size: 10px; line-height: 14px !important; pointer-events: none; height: 14px !important;"></div></div>');
-		
-		// Add progress element after the button
-		$btn.after($progress);
-		
-		// Disable button and show initial state
-		$btn.html('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('jamf.pulling_data'));
-		$btn.prop('disabled', true);
-		
-		// Update progress function
-		function updateProgress(percent, message) {
-			$progress.find('.progress-bar').css('width', percent + '%');
-			$progress.find('div:last-child').text(message);
-		}
-		
-		// Simulate progress steps
-		var steps = [
-			{ percent: 0, message: i18n.t('jamf.processing') },
-			{ percent: 15, message: i18n.t('jamf.pulling_data') },
-			{ percent: 30, message: i18n.t('jamf.processing') },
-			{ percent: 45, message: i18n.t('jamf.processing') },
-			{ percent: 60, message: i18n.t('jamf.processing') },
-			{ percent: 75, message: i18n.t('jamf.processing') },
-			{ percent: 90, message: i18n.t('jamf.processing') },
-			{ percent: 100, message: i18n.t('jamf.processing') }
-		];
-		
-		var currentStep = 0;
-		var stepInterval = setInterval(function() {
-			if (currentStep < steps.length) {
-				updateProgress(steps[currentStep].percent, steps[currentStep].message);
-				currentStep++;
-			}
-		}, 1000); // Changed from 500ms to 1000ms (1 second) per step
-		
-		// Make the API call
-		$.ajax({
-			url: appUrl + '/module/jamf/recheck_jamf/' + serialNumber,
-			method: 'GET',
-			dataType: 'json',
-			success: function(response) {
-				clearInterval(stepInterval);
-				if (response.status === 'success') {
-					// Show completion message briefly before reload
-					updateProgress(100, response.message);
-					
-					// Reload after a short delay to show completion
-					setTimeout(function() {
-						window.location.reload();
-					}, 500);
-				} else {
-					// Show error message
-					updateProgress(0, response.message);
-					$btn.prop('disabled', false).html('<i class="fa fa-refresh"></i> ' + i18n.t('jamf.recheck'));
-				}
-			},
-			error: function() {
-				clearInterval(stepInterval);
-				// Show error message
-				updateProgress(0, i18n.t('jamf.error_pulling'));
-				$btn.prop('disabled', false).html('<i class="fa fa-refresh"></i> ' + i18n.t('jamf.recheck'));
-			}
-		});
-		
-		return false;
-	});
 
 	// Get Jamf data
 	$('#jamf-msg').html('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('jamf.pulling_data'));
@@ -521,24 +464,23 @@ $(document).on('appReady', function(e, lang) {
             // Get the Jamf server address
             var jamf_server = "<?php configAppendFile(__DIR__ . '/../config.php'); echo rtrim(conf('jamf_server'), '/'); ?>";
             
-            // Generate buttons and tabs
-            $('#jamf_view_in').html('<a class="btn btn-default btn-sm" target="_blank" href="'+jamf_server+'/computers.html?id='+data['jamf_id']+'&o=r&v=inventory"> '+i18n.t("jamf.view_in_jamf")+'</a>'); // View in Jamf button
-            $('#jamf_general_button').html('<i class="fa fa-info-circle"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.general")); // General tab
-            $('#jamf_hardware_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("hardware.hardware")); // Hardware tab
-            $('#jamf_operatingsystem_button').html('<i class="fa fa-apple"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.operatingsystem")); // Operating System tab
-            $('#jamf_userlocation_button').html('<i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.userlocation")); // User Location tab
-            $('#jamf_security_button').html('<i class="fa fa-lock"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.security")); // Security tab
-            $('#jamf_purchasing_button').html('<i class="fa fa-money"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.purchasing")); // Purchasing tab
-            $('#jamf_extension_attributes_button').html('<i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.extension_attributes")+'&nbsp;&nbsp;<span id="jamf-extensions-cnt" class="badge"></span>'); // Extension Attributes tab
-            $('#jamf_managementcommands_button').html('<i class="fa fa-tachometer"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.managementcommands")); // Management Commands tab
-            $('#jamf_policies_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policies_management")+'&nbsp;&nbsp;<span id="jamf-policies-cnt" class="badge"></span>'); // Policies tab
-            $('#jamf_ebooks_button').html('<i class="fa fa-book"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.ebooks_management")+'&nbsp;&nbsp;<span id="jamf-ebooks-cnt" class="badge"></span>'); // eBooks tab
-            $('#jamf_mac_apps_button').html('<i class="fa fa-caret-square-o-up"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.mac_app_store_applications_history")+'&nbsp;&nbsp;<span id="jamf-macapps-cnt" class="badge"></span>'); // Mac App Store tab
-            $('#jamf_config_profiles_button').html('<i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.configuration_profiles")+'&nbsp;&nbsp;<span id="jamf-profs-cnt2" class="badge"></span>'); // Configuration Profiles tab
-            $('#jamf_man_prefs_button').html('<i class="fa fa-sliders"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.managed_preference_profiles_management")+'&nbsp;&nbsp;<span id="jamf-manprefs-cnt" class="badge"></span>'); // Managed Preferences tab
-            $('#jamf_restricted_software_button').html('<i class="fa fa-shield"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.restricted_software_management")+'&nbsp;&nbsp;<span id="jamf-restsoft-cnt" class="badge"></span>'); // Restricted Software tab
-            $('#jamf_computergroups_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computergroups")); // Computer Groups tab
-            $('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.patch_management_logs_history")); // Patch Management tab
+            // Generate buttons and tabs with standard tooltips
+            $('#jamf_view_in').html('<a class="btn btn-default btn-sm" target="_blank" href="'+jamf_server+'/computers.html?id='+data['jamf_id']+'&o=r&v=inventory" title="Open in Jamf Pro"><i class="fa fa-external-link"></i> '+i18n.t("jamf.view_in_jamf")+'</a>'); // View in Jamf button
+            $('#jamf_general_button').html('<i class="fa fa-info-circle"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.general")).attr('title', 'View general information'); // General tab
+            $('#jamf_hardware_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("hardware.hardware")).attr('title', 'View hardware information'); // Hardware tab
+            $('#jamf_userlocation_button').html('<i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.userlocation")).attr('title', 'View user and location information'); // User Location tab
+            $('#jamf_purchasing_button').html('<i class="fa fa-money"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.purchasing")).attr('title', 'View purchasing information'); // Purchasing tab
+            $('#jamf_extension_attributes_button').html('<i class="fa fa-puzzle-piece"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.extension_attributes")+'&nbsp;&nbsp;<span id="jamf-extensions-cnt" class="badge"></span>').attr('title', 'View extension attributes'); // Extension Attributes tab
+            $('#jamf_managementcommands_button').html('<i class="fa fa-tachometer"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.managementcommands")).attr('title', 'View management commands'); // Management Commands tab
+            $('#jamf_policies_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policies_management")+'&nbsp;&nbsp;<span id="jamf-policies-cnt" class="badge"></span>').attr('title', 'View policies'); // Policies tab
+            $('#jamf_ebooks_button').html('<i class="fa fa-book"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.ebooks_management")+'&nbsp;&nbsp;<span id="jamf-ebooks-cnt" class="badge"></span>').attr('title', 'View eBooks'); // eBooks tab
+            $('#jamf_mac_apps_button').html('<i class="fa fa-caret-square-o-up"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.mac_app_store_applications_history")+'&nbsp;&nbsp;<span id="jamf-macapps-cnt" class="badge"></span>').attr('title', 'View Mac App Store applications'); // Mac App Store tab
+            $('#jamf_config_profiles_button').html('<i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.configuration_profiles")+'&nbsp;&nbsp;<span id="jamf-profs-cnt2" class="badge"></span>').attr('title', 'View configuration profiles'); // Configuration Profiles tab
+            $('#jamf_man_prefs_button').html('<i class="fa fa-sliders"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.managed_preference_profiles_management")+'&nbsp;&nbsp;<span id="jamf-manprefs-cnt" class="badge"></span>').attr('title', 'View managed preferences'); // Managed Preferences tab
+            $('#jamf_restricted_software_button').html('<i class="fa fa-shield"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.restricted_software_management")+'&nbsp;&nbsp;<span id="jamf-restsoft-cnt" class="badge"></span>').attr('title', 'View restricted software'); // Restricted Software tab
+            $('#jamf_computergroups_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computergroups")).attr('title', 'View computer groups'); // Computer Groups tab
+            $('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.patch_management_logs_history")).attr('title', 'View patch management'); // Patch Management tab
+            $('#jamf_policylogs_button').html('<i class="fa fa-clipboard"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policy_logs")+'&nbsp;&nbsp;<span id="jamf-policylogs-cnt" class="badge"></span>').attr('title', 'View policy logs'); // Policy Logs tab
             
             // Fix dates, after checking if date is set
             if ( data['last_contact_time_epoch'] !== null ){
@@ -646,7 +588,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of extension attributes
                 $('#jamf-extensions-cnt').text(extensionsdata.length);
                 // Make the table framework
-                var extensionsrows = '<h4>'+i18n.t('jamf.extension_attributes')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computerExtensionAttributes.html"><i class="fa fa-cog"></i> '+i18n.t("jamf.extension_attributes")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.attribute')+'</th>'
+                var extensionsrows = '<h4>'+i18n.t('jamf.extension_attributes')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computerExtensionAttributes.html" title="Configure Extension Attributes"><i class="fa fa-cog"></i> '+i18n.t("jamf.extension_attributes")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.attribute')+'</th>'
                 if (parseInt(extensionsdata.length) == 0 ){
                         extensionsrows = extensionsrows+'<tr><td>'+i18n.t('jamf.no_extension_attributes')+'</td><td></td></tr>';   
                 } else {
@@ -916,6 +858,103 @@ $(document).on('appReady', function(e, lang) {
                 $('#Jamf-Patch-Policies-Table').html(patchpoliciesrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
 
+            // Make Policy Logs table
+            if (data['policy_logs_history'] && data['policy_logs_history'] != null && data['policy_logs_history'] != 'null'){
+                var policylogsdata = JSON.parse(data['policy_logs_history']);
+                
+                // Set count of policies
+                if (policylogsdata.length !== undefined) {
+                    $('#jamf-policylogs-cnt').text(policylogsdata.length);
+                } else {
+                    $('#jamf-policylogs-cnt').text('0');
+                }
+                
+                // Make the table framework using DataTables
+                var policylogsrows = '<h4>'+i18n.t('jamf.policy_logs')+'</h4>';
+                policylogsrows += '<table class="table table-striped table-condensed table-bordered" id="jamf-policy-logs-table">';
+                policylogsrows += '<thead><tr><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.date')+'</th><th>'+i18n.t('jamf.status')+'</th><th>'+i18n.t('jamf.username')+'</th></tr></thead>';
+                policylogsrows += '<tbody>';
+                
+                if (!policylogsdata.length || parseInt(policylogsdata.length) == 0){
+                    policylogsrows += '<tr><td colspan="4">'+i18n.t('jamf.no_policy_logs')+'</td></tr>';   
+                } else {
+                    $.each(policylogsdata, function(i,d){
+                        // Fix date/time if available
+                        var timehuman = '';
+                        var timestamp = 0; // Timestamp for sorting
+                        
+                        if (d.date_epoch && d.date_epoch != null) {
+                            timestamp = parseInt(d.date_epoch);
+                            timehuman = '<span title="'+moment(timestamp).fromNow()+'">'+moment(timestamp).format('llll')+'</span>';
+                        } else if (d.date_completed_epoch && d.date_completed_epoch != null) {
+                            timestamp = parseInt(d.date_completed_epoch);
+                            timehuman = '<span title="'+moment(timestamp).fromNow()+'">'+moment(timestamp).format('llll')+'</span>';
+                        } else if (d.date && d.date != null) {
+                            timehuman = d.date;
+                        } else if (d.time && d.time != null) {
+                            timehuman = d.time;
+                        } else {
+                            timehuman = '<i>No date available</i>';
+                        }
+                        
+                        // Add data-sort attribute for proper date sorting
+                        var timeCell = '<td data-sort="'+timestamp+'">'+timehuman+'</td>';
+                        
+                        // Generate rows from data - handle different possible field names
+                        var status = '';
+                        if (d.status) status = d.status;
+                        else if (d.Status) status = d.Status;
+                        
+                        var name = '';
+                        if (d.name) name = d.name;
+                        else if (d.policy_name) name = d.policy_name;
+                        else if (d.Name) name = d.Name;
+                        else if (d.PolicyName) name = d.PolicyName;
+                        
+                        // Extract username - handle different possible field names
+                        var username = '';
+                        if (d.username) username = d.username;
+                        else if (d.user) username = d.user;
+                        else if (d.Username) username = d.Username;
+                        else if (d.User) username = d.User;
+                        else username = '<i>-</i>';
+                        
+                        // Create a link to the policy if we have an ID
+                        var policyId = '';
+                        if (d.policy_id) policyId = d.policy_id;
+                        else if (d.id) policyId = d.id;
+                        
+                        if (policyId) {
+                            name = '<a target="_blank" href="'+jamf_server+'/policies.html?id='+policyId+'&o=r'+'">'+name+'</a>';
+                        }
+                        
+                        policylogsrows += '<tr><td>'+name+'</td>'+timeCell+'<td>'+status+'</td><td>'+username+'</td></tr>';
+                    });
+                }
+                
+                policylogsrows += '</tbody></table>';
+                
+                $('#Jamf-PolicyLogs-Table').html(policylogsrows);
+                
+                // Initialize DataTable with sorting, searching, and scrolling
+                $('#jamf-policy-logs-table').dataTable({
+                    "bServerSide": false,
+                    "aaSorting": [[1, 'desc']], // Default sort by date column (descending)
+                    "sPaginationType": "full_numbers",
+                    "bFilter": true,
+                    "bInfo": true,
+                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                           "<'row'<'col-sm-12'tr>>" +
+                           "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    "columnDefs": [
+                        { "type": "num", "targets": 1 } // Ensure numeric sorting for the date column
+                    ],
+                    "order": [[1, 'desc']], // Reinforced sort by date (column 1) in descending order
+                    "ordering": true
+                });
+            }
+
 			// Add strings
 			$('#jamf_serial_number').text(data['serial_number']);
 			$('#jamf_id').text(data['jamf_id']); 
@@ -968,18 +1007,91 @@ $(document).on('appReady', function(e, lang) {
 
 	});
 
+	// Handle recheck button click
+	$('#jamf-recheck').click(function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var $btn = $(this);
+		var $progress = $('<div class="progress" style="margin-top: 10px; margin-left: 10px; height: 14px !important; width: 130px; display: inline-block; position: relative;"><div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 0%; background-color: #5cb85c; color: white; font-size: 10px; line-height: 14px !important; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 14px !important;"></div><div style="position: absolute; width: 100%; text-align: center; color: white; font-size: 10px; line-height: 14px !important; pointer-events: none; height: 14px !important;"></div></div>');
+		
+		// Add progress element after the button
+		$btn.after($progress);
+		
+		// Disable button and show initial state
+		$btn.html('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('jamf.pulling_data'));
+		$btn.prop('disabled', true);
+		
+		// Update progress function
+		function updateProgress(percent, message) {
+			$progress.find('.progress-bar').css('width', percent + '%');
+			$progress.find('div:last-child').text(message);
+		}
+		
+		// Simulate progress steps
+		var steps = [
+			{ percent: 0, message: i18n.t('jamf.pulling_data') },
+			{ percent: 15, message: i18n.t('jamf.pulling_data') },
+			{ percent: 30, message: i18n.t('jamf.pulling_data') },
+			{ percent: 45, message: i18n.t('jamf.pulling_data') },
+			{ percent: 60, message: i18n.t('jamf.pulling_data') },
+			{ percent: 75, message: i18n.t('jamf.processing') },
+			{ percent: 90, message: i18n.t('jamf.processing') },
+			{ percent: 100, message: i18n.t('jamf.processing') }
+		];
+		
+		var currentStep = 0;
+		var stepInterval = setInterval(function() {
+			if (currentStep < steps.length) {
+				updateProgress(steps[currentStep].percent, steps[currentStep].message);
+				currentStep++;
+			}
+		}, 1000); // Changed from 500ms to 1000ms (1 second) per step
+		
+		// Make the API call
+		$.ajax({
+			url: appUrl + '/module/jamf/recheck_jamf/' + serialNumber,
+			method: 'GET',
+			dataType: 'json',
+			success: function(response) {
+				clearInterval(stepInterval);
+				if (response.status === 'success') {
+					// Show completion message briefly before reload
+					updateProgress(100, response.message);
+					
+					// Reload after a short delay to show completion
+					setTimeout(function() {
+						window.location.reload();
+					}, 500);
+				} else {
+					// Show error message
+					updateProgress(0, response.message);
+					$btn.prop('disabled', false).html('<i class="fa fa-refresh"></i> ' + i18n.t('jamf.recheck'));
+				}
+			},
+			error: function() {
+				clearInterval(stepInterval);
+				// Show error message
+				updateProgress(0, i18n.t('jamf.error_pulling'));
+				$btn.prop('disabled', false).html('<i class="fa fa-refresh"></i> ' + i18n.t('jamf.recheck'));
+			}
+		});
+		
+		return false;
+	});
+
+	// Make button groups active
+	$(".btn-group > .btn").click(function(){
+		$(this).addClass("active").siblings().removeClass("active");
+	});
+
+	// Prevent hash changes when clicking any Jamf tabs
+	$('.nav-tabs a, #jamf-inventory .jamf-left a, #jamf-management .jamf-left a, .btn-group > .btn').on('click', function (e) {
+		e.preventDefault();
+		$(this).tab('show');
+		history.pushState(null, null, '#tab_jamf-tab');
+	});
+
 });
     
-// Make button groups active
-$(".btn-group > .btn").click(function(){
-    $(this).addClass("active").siblings().removeClass("active");
-});
-
-// Prevent hash changes when clicking any Jamf tabs
-$('.nav-tabs a, #jamf-inventory .jamf-left a, #jamf-management .jamf-left a, .btn-group > .btn').on('click', function (e) {
-    e.preventDefault();
-    $(this).tab('show');
-    history.pushState(null, null, '#tab_jamf-tab');
-});
-
 </script>

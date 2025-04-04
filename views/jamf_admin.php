@@ -22,18 +22,18 @@ var jamf_pull_all_running = 0;
 $(document).on('appReady', function(e, lang) {
 
     // Generate pull all button and header    
-    $('#jamf_pull_all').html('<h3 class="col-lg-6" >&nbsp;&nbsp;'+i18n.t('jamf.title_admin')+'&nbsp;&nbsp;<button id="GetAllJamf" class="btn btn-default btn-xs hide">'+i18n.t("jamf.pull_in_all")+'</button></h3>');
+    $('#jamf_pull_all').html('<h3 class="col-lg-6" >&nbsp;&nbsp;<i class="fa fa-cloud"></i> '+i18n.t('jamf.title_admin')+'&nbsp;&nbsp;<button id="GetAllJamf" class="btn btn-default btn-xs hide">'+i18n.t("jamf.pull_in_all")+'</button></h3>');
 
     // Get Jamf server URL
     var jamf_server = "<?php echo rtrim(conf('jamf_server'), '/'); ?>";
 
     // Check if Jamf lookups are enabled
     if ("<?php echo conf('jamf_enable'); ?>" == true) {
-        var jamf_enabled = i18n.t('yes');
+        var jamf_enabled = '<span class="text-success">'+i18n.t('yes')+'</span>';
         var jamf_enabled_int = 1;
         $('#GetAllJamf').removeClass('hide');
     } else { 
-        var jamf_enabled = i18n.t('no');
+        var jamf_enabled = '<span class="text-danger">'+i18n.t('no')+'</span>';
         var jamf_enabled_int = 0;
     }
 
@@ -41,16 +41,16 @@ $(document).on('appReady', function(e, lang) {
 
     // Check if Jamf API password is set
     if (parseInt("<?php echo strlen(conf('jamf_password')); ?>") > 0) {
-        var jamf_password = i18n.t('yes');    
+        var jamf_password = '<span class="text-success">'+i18n.t('yes')+'</span>';    
     } else { 
-        var jamf_password = i18n.t('no');
+        var jamf_password = '<span class="text-danger">'+i18n.t('no')+'</span>';
     }
 
     // Get verify SSL state
     if ("<?php echo conf('jamf_verify_ssl'); ?>" == true) {
-        var jamf_verify_ssl = i18n.t('yes');    
+        var jamf_verify_ssl = '<span class="text-success">'+i18n.t('yes')+'</span>';    
     } else { 
-        var jamf_verify_ssl = i18n.t('no');
+        var jamf_verify_ssl = '<span class="text-danger">'+i18n.t('no')+'</span>';
     }
 
     // Get Jamf API username
@@ -67,48 +67,72 @@ $(document).on('appReady', function(e, lang) {
                     $jamf_verify_ssl = 1;
                 }
 
-                // // Get Jamf bearer token
-                // // Commented out for now
-                // $ch = curl_init();
-                // curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/')."/api/v1/auth/token");
-                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                // curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
-                // curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-                // curl_setopt($ch, CURLOPT_USERPWD, conf('jamf_username').':'.conf('jamf_password'));
-                // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
-                // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
-                // curl_setopt($ch, CURLOPT_POST, 1);
-
-                // $json = json_decode(curl_exec($ch));
-                // $bearer_token = $json->token;
-                
-                // // Check for timeout
-                // if (curl_errno($ch) && curl_errno($ch) == 28) {
-                //     error_log("MunkiReport:- Jamf server timed out when getting the bearer token!", 0);
-                //     return false;
-                // } else if (curl_errno($ch)) {
-                //     error_log("MunkiReport:- There was an error getting the bearer token from the Jamf server: ".curl_errno($ch), 0);
-                //     return false;
-                // }
-
+                // Get Jamf bearer token
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/').'/JSSResource/jssuser');
+                curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/')."/api/v1/auth/token");
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
                 curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                 curl_setopt($ch, CURLOPT_USERPWD, conf('jamf_username').':'.conf('jamf_password'));
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: application/json'));
-                // curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: application/json', 'Authorization: Bearer'.$bearer_token'));
+                curl_setopt($ch, CURLOPT_POST, 1);
 
-                $jamfresult = curl_exec($ch);
-                if (strpos($jamfresult, 'The request requires user authentication') !== false){
-                    echo '{"user": "Unauthorized"}';
-                } else if ( $jamfresult == "" ){
-                    echo '{"user": "404_Not_Found"}';
+                $token_result = curl_exec($ch);
+                $json = json_decode($token_result);
+                $bearer_token = '';
+                
+                // Check if token was successfully retrieved
+                if ($json && isset($json->token)) {
+                    $bearer_token = $json->token;
+                    
+                    // Now use the bearer token to get user info
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/').'/api/v1/jamf-pro-version');
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Authorization: Bearer '.$bearer_token));
+
+                    $version_result = curl_exec($ch);
+                    $version_json = json_decode($version_result, true);
+                    
+                    if ($version_json && isset($version_json['version'])) {
+                        // If we could get the version, create a simplified response that matches
+                        // the expected format for the admin page
+                        $user_info = array(
+                            'user' => array(
+                                'institution' => 'Retrieved from Jamf Pro API',
+                                'license_type' => 'Retrieved via API v1',
+                                'product' => 'Jamf Pro',
+                                'version' => $version_json['version'],
+                                'privileges' => array('API access confirmed')
+                            )
+                        );
+                        echo json_encode($user_info);
+                    } else {
+                        // Try the classic API endpoint as fallback
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/').'/JSSResource/jssuser');
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Authorization: Bearer '.$bearer_token));
+
+                        $jamfresult = curl_exec($ch);
+                        if (strpos($jamfresult, 'The request requires user authentication') !== false){
+                            echo '{"user": "Unauthorized"}';
+                        } else if ($jamfresult == ""){
+                            echo '{"user": "404_Not_Found"}';
+                        } else {
+                            echo $jamfresult;
+                        }
+                    }
                 } else {
-                    echo $jamfresult;
+                    // Failed to get bearer token
+                    echo '{"user": "Unauthorized"}';
                 }
             }
         ?>'
@@ -119,11 +143,11 @@ $(document).on('appReady', function(e, lang) {
 
     // Build table
     var jssrows = '<table class="table table-striped table-condensed"><tbody>'
-    jssrows = jssrows + '<tr><th>'+i18n.t('jamf.lookups_enabled')+'</th><td>'+jamf_enabled+'</td></tr>';
+    jssrows = jssrows + '<tr><th>'+i18n.t('jamf.lookups_enabled')+'</th><td>'+(jamf_enabled_int == 1 ? '<span class="label label-success">'+i18n.t('yes')+'</span>' : '<span class="label label-danger">'+i18n.t('no')+'</span>')+'</td></tr>';
     jssrows = jssrows + '<tr><th>'+i18n.t('jamf.jss_server')+'</th><td><a target="_blank" href="'+jamf_server+'">'+jamf_server+'</a></td></tr>';
-    jssrows = jssrows + '<tr><th>'+i18n.t('jamf.jamf_verify_ssl')+'</th><td>'+jamf_verify_ssl+'</td></tr>';
+    jssrows = jssrows + '<tr><th>'+i18n.t('jamf.jamf_verify_ssl')+'</th><td>'+("<?php echo conf('jamf_verify_ssl'); ?>" == true ? '<span class="label label-success">'+i18n.t('yes')+'</span>' : '<span class="label label-danger">'+i18n.t('no')+'</span>')+'</td></tr>';
     jssrows = jssrows + '<tr><th>'+i18n.t('jamf.jamf_username')+'</th><td>'+jamf_username+'</td></tr>';
-    jssrows = jssrows + '<tr><th>'+i18n.t('jamf.password_set')+'</th><td>'+jamf_password+'</td></tr>';
+    jssrows = jssrows + '<tr><th>'+i18n.t('jamf.password_set')+'</th><td>'+(parseInt("<?php echo strlen(conf('jamf_password')); ?>") > 0 ? '<span class="label label-success">'+i18n.t('yes')+'</span>' : '<span class="label label-danger">'+i18n.t('no')+'</span>')+'</td></tr>';
     if (jamf_enabled_int == 1 && jssuserdata['user'] !== "Unauthorized" && jssuserdata['user'] !== "404_Not_Found"){
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.institution')+'</th><td>'+jssuserdata['user']['institution']+'</td></tr>';
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.license_type')+'</th><td>'+jssuserdata['user']['license_type']+'</td></tr>';
@@ -132,14 +156,18 @@ $(document).on('appReady', function(e, lang) {
 
         var jssprivileges = ''
         $.each(jssuserdata['user']['privileges'], function(i,d){
-            jssprivileges = jssprivileges + d + "</br>";
+            if (d === "API access confirmed") {
+                jssprivileges = jssprivileges + '<span class="label label-success">' + d + '</span></br>';
+            } else {
+                jssprivileges = jssprivileges + d + "</br>";
+            }
         }) 
 
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.privileges')+'</th><td>'+jssprivileges+'</td></tr>'
     } else if (jamf_enabled_int == 1 && jssuserdata['user'] == "Unauthorized"){
-        jssrows = jssrows + '<tr><th class="danger">'+i18n.t('error')+'</th><td class="danger">'+i18n.t('jamf.not_authorized')+'</td></tr>';
+        jssrows = jssrows + '<tr><th class="danger">'+i18n.t('error')+'</th><td class="danger"><span class="label label-danger">'+i18n.t('jamf.not_authorized')+'</span></td></tr>';
     } else if (jamf_enabled_int == 1 && jssuserdata['user'] == "404_Not_Found"){
-        jssrows = jssrows + '<tr><th class="danger">'+i18n.t('error')+'</th><td class="danger">'+i18n.t('jamf.bad_server')+'</td></tr>';
+        jssrows = jssrows + '<tr><th class="danger">'+i18n.t('error')+'</th><td class="danger"><span class="label label-danger">'+i18n.t('jamf.bad_server')+'</span></td></tr>';
     }
 
     $('#Jamf-System-Status').html(jssrows+'</tbody></table>') // Close table framework and assign to HTML ID
