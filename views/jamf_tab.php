@@ -78,10 +78,13 @@
                             <th class="jamf-table-right" data-i18n="jamf.managed"></th>
                             <td class="jamf-table-left" id="jamf_managed"></td>
                         </tr>
+                        <!-- Last iCloud Backup - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.last_cloud_backup_date_epoch"></th>
                             <td class="jamf-table-left" id="jamf_last_cloud_backup_date_epoch"></td>
                         </tr>
+                        -->
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.last_enrolled_date_epoch"></th>
                             <td class="jamf-table-left" id="jamf_last_enrolled_date_epoch"></td>
@@ -107,6 +110,14 @@
                             <td class="jamf-table-left" id="jamf_mdm_capable_users"></td>
                         </tr>
                         <tr>
+                            <th class="jamf-table-right" data-i18n="jamf.disable_automatic_login"></th>
+                            <td class="jamf-table-left" id="jamf_disable_automatic_login"></td>
+                        </tr>
+                        <tr>
+                            <th class="jamf-table-right" data-i18n="jamf.xprotect_version"></th>
+                            <td class="jamf-table-left" id="jamf_xprotect_version"></td>
+                        </tr>
+                        <tr>
                             <th class="jamf-table-right" data-i18n="jamf.jamf_id"></th>
                             <td class="jamf-table-left" id="jamf_id"></td>
                         </tr>
@@ -122,26 +133,41 @@
                             <th class="jamf-table-right" data-i18n="jamf.barcode_2"></th>
                             <td class="jamf-table-left" id="jamf_barcode_2"></td>
                         </tr>
+                        <!-- Bluetooth Low Energy Capable - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.ble_capable"></th>
                             <td class="jamf-table-left" id="jamf_ble_capable"></td>
                         </tr>
+                        -->
+                        <!-- Logged in to iTunes Store - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.itunes_store_account_is_active"></th>
                             <td class="jamf-table-left" id="jamf_itunes_store_account_is_active"></td>
                         </tr>
+                        -->
+                        <!-- Distribution Point - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.distribution_point"></th>
                             <td class="jamf-table-left" id="jamf_distribution_point"></td>
                         </tr>
+                        -->
+                        <!-- Software Update Server - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.sus"></th>
                             <td class="jamf-table-left" id="jamf_sus"></td>
                         </tr>
+                        -->
+                        <!-- NetBoot Server - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.netboot_server"></th>
                             <td class="jamf-table-left" id="jamf_netboot_server"></td>
                         </tr>
+                        -->
                     </table>
                 </div>
                 <!--Hardware tab content-->
@@ -221,10 +247,13 @@
                             <th class="jamf-table-right" data-i18n="jamf.nic_speed"></th>
                             <td class="jamf-table-left" id="jamf_nic_speed"></td>
                         </tr>
+                        <!-- Optical Drive - commented out as requested -->
+                        <!--
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.optical_drive"></th>
                             <td class="jamf-table-left" id="jamf_optical_drive"></td>
                         </tr>
+                        -->
                         <tr>
                             <th class="jamf-table-right" data-i18n="jamf.boot_rom"></th>
                             <td class="jamf-table-left" id="jamf_boot_rom"></td>
@@ -343,9 +372,9 @@
               <li class="active" id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ManagementCommands" id="jamf_managementcommands_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-Policies" id="jamf_policies_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-eBooks" id="jamf_ebooks_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-MacAppStoreApps" id="jamf_mac_apps_button"></a></li>
+              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-MacApps" id="jamf_mac_apps_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ConfigurationProfiles" id="jamf_config_profiles_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ManagedPreferences" id="jamf_man_prefs_button"></a></li>
+              <li id="jamf-button" class="hide"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ManagedPreferences" id="jamf_man_prefs_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-RestrictedSoftware" id="jamf_restricted_software_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ComputerGroups" id="jamf_computergroups_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-PatchMangement" id="jamf_patchmanagement_button"></a></li>
@@ -367,10 +396,21 @@
                   <!--eBooks table-->
                   <div id="Jamf-eBooks-Table"></div>
                 </div>
-                <!--MacAppStoreApps tab content-->
-                <div id="Jamf-MacAppStoreApps" class="tab-pane">
-                  <!--MacAppStoreApps table-->
-                  <div id="Jamf-MacApps-Table"></div>
+                <!--MacApps tab content-->
+                <div id="Jamf-MacApps" class="tab-pane">
+                    <!--MacApps table-->
+                    <h4 data-i18n="jamf.mac_apps"></h4>
+                    <!--MacApps button group-->
+                    <div class="btn-group btn-group-justified">
+                        <a data-toggle="tab" class="btn btn-primary active" href="#Jamf-JamfApps-Table" id="jamf_jamf_apps_button"></a>
+                        <a data-toggle="tab" class="btn btn-primary" href="#Jamf-MacApps-Table" id="jamf_app_store_button"></a>
+                    </div>
+                    <br/>
+                    <!--MacApps tables-->
+                    <div class="tab-content jamf-tab-content">
+                        <div id="Jamf-JamfApps-Table" class="tab-pane in active"></div>
+                        <div id="Jamf-MacApps-Table" class="tab-pane"></div>
+                    </div>
                 </div>
                 <!--ConfigurationProfiles tab content-->
                 <div id="Jamf-ConfigurationProfiles" class="tab-pane">
@@ -474,13 +514,15 @@ $(document).on('appReady', function(e, lang) {
             $('#jamf_managementcommands_button').html('<i class="fa fa-tachometer"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.managementcommands")).attr('title', 'View management commands'); // Management Commands tab
             $('#jamf_policies_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policies_management")+'&nbsp;&nbsp;<span id="jamf-policies-cnt" class="badge"></span>').attr('title', 'View policies'); // Policies tab
             $('#jamf_ebooks_button').html('<i class="fa fa-book"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.ebooks_management")+'&nbsp;&nbsp;<span id="jamf-ebooks-cnt" class="badge"></span>').attr('title', 'View eBooks'); // eBooks tab
-            $('#jamf_mac_apps_button').html('<i class="fa fa-caret-square-o-up"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.mac_app_store_applications_history")+'&nbsp;&nbsp;<span id="jamf-macapps-cnt" class="badge"></span>').attr('title', 'View Mac App Store applications'); // Mac App Store tab
+            $('#jamf_mac_apps_button').html('<i class="fa fa-caret-square-o-up"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.mac_apps")+'&nbsp;&nbsp;<span id="jamf-macapps-cnt" class="badge"></span>').attr('title', 'View Mac Apps'); // Mac Apps tab
+            $('#jamf_jamf_apps_button').text(i18n.t('jamf.jamf_app_catalog')); // Jamf App Catalog button
+            $('#jamf_app_store_button').text(i18n.t('jamf.app_store')); // App Store button
             $('#jamf_config_profiles_button').html('<i class="fa fa-cogs"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.configuration_profiles")+'&nbsp;&nbsp;<span id="jamf-profs-cnt2" class="badge"></span>').attr('title', 'View configuration profiles'); // Configuration Profiles tab
             $('#jamf_man_prefs_button').html('<i class="fa fa-sliders"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.managed_preference_profiles_management")+'&nbsp;&nbsp;<span id="jamf-manprefs-cnt" class="badge"></span>').attr('title', 'View managed preferences'); // Managed Preferences tab
             $('#jamf_restricted_software_button').html('<i class="fa fa-shield"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.restricted_software_management")+'&nbsp;&nbsp;<span id="jamf-restsoft-cnt" class="badge"></span>').attr('title', 'View restricted software'); // Restricted Software tab
             $('#jamf_computergroups_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computergroups")).attr('title', 'View computer groups'); // Computer Groups tab
-            $('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.patch_management_logs_history")).attr('title', 'View patch management'); // Patch Management tab
-            $('#jamf_policylogs_button').html('<i class="fa fa-clipboard"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policy_logs")+'&nbsp;&nbsp;<span id="jamf-policylogs-cnt" class="badge"></span>').attr('title', 'View policy logs'); // Policy Logs tab
+            $('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t('jamf.patch_management_logs_history')).attr('title', 'View patch management'); // Patch Management tab
+            $('#jamf_policylogs_button').html('<i class="fa fa-history"></i>&nbsp;&nbsp;&nbsp;'+i18n.t('jamf.policy_logs')+'&nbsp;&nbsp;<span id="jamf-policylogs-cnt" class="badge"></span>').attr('title', 'View history'); // Policy Logs tab
             
             // Fix dates, after checking if date is set
             if ( data['last_contact_time_epoch'] !== null ){
@@ -517,31 +559,36 @@ $(document).on('appReady', function(e, lang) {
 
             // Format managed row
             if ( data['managed'] == 1 ){
-                $('#jamf_managed').html(i18n.t("yes")+', '+i18n.t("jamf.by")+'<span title="'+i18n.t("jamf.management_password_sha256")+': '+data['management_password_sha256']+'"> '+data['management_username']+'</span>');
+                $('#jamf_managed').html('<span class="label label-success">'+i18n.t("yes")+'</span>');
             } else {
-                $('#jamf_managed').text(i18n.t("no"));
+                $('#jamf_managed').html('<span class="label label-danger">'+i18n.t("no")+'</span>');
             }
             
             // Format booleans
             if ( data['mdm_capable'] == 1 ){
-                $('#jamf_mdm_capable').text(i18n.t("yes"));
+                $('#jamf_mdm_capable').html('<span class="label label-success">'+i18n.t("yes")+'</span>');
             } else {
-                $('#jamf_mdm_capable').text(i18n.t("no"));
+                $('#jamf_mdm_capable').html('<span class="label label-danger">'+i18n.t("no")+'</span>');
             }
             if ( data['user_approved_enrollment'] == 1 ){
-                $('#jamf_user_approved_enrollment').text(i18n.t("yes"));
+                $('#jamf_user_approved_enrollment').html('<span class="label label-success">'+i18n.t("yes")+'</span>');
             } else {
-                $('#jamf_user_approved_enrollment').text(i18n.t("no"));
+                $('#jamf_user_approved_enrollment').html('<span class="label label-danger">'+i18n.t("no")+'</span>');
             }
             if ( data['user_approved_mdm'] == 1 ){
-                $('#jamf_user_approved_mdm').text(i18n.t("yes"));
+                $('#jamf_user_approved_mdm').html('<span class="label label-success">'+i18n.t("yes")+'</span>');
             } else {
-                $('#jamf_user_approved_mdm').text(i18n.t("no"));
+                $('#jamf_user_approved_mdm').html('<span class="label label-danger">'+i18n.t("no")+'</span>');
             }
             if ( data['enrolled_via_dep'] == 1 ){
-                $('#jamf_enrolled_via_dep').text(i18n.t("yes"));
+                $('#jamf_enrolled_via_dep').html('<span class="label label-success">'+i18n.t("yes")+'</span>');
             } else {
-                $('#jamf_enrolled_via_dep').text(i18n.t("no"));
+                $('#jamf_enrolled_via_dep').html('<span class="label label-danger">'+i18n.t("no")+'</span>');
+            }
+            if ( data['disable_automatic_login'] == 1 ){
+                $('#jamf_disable_automatic_login').html('<span class="label label-success">'+i18n.t("yes")+'</span>');
+            } else {
+                $('#jamf_disable_automatic_login').html('<span class="label label-danger">'+i18n.t("no")+'</span>');
             }
             if ( data['itunes_store_account_is_active'] == 1 ){
                 $('#jamf_itunes_store_account_is_active').text(i18n.t("yes"));
@@ -559,6 +606,9 @@ $(document).on('appReady', function(e, lang) {
                 $('#jamf_is_purchased').text(i18n.t("jamf.is_leased"));
             }
 			
+            // Add XProtect Version
+            $('#jamf_xprotect_version').text(data['xprotect_version']);
+            
             // Format hardware strings
             $('#jamf_processor_speed').html((parseInt(data['processor_speed'])/1000)+" Ghz");
             $('#jamf_cache_size').html('<span title="'+data['cache_size']+' KB">'+Math.round((parseInt(data['cache_size'])/1000), 0)+" MB</span>");
@@ -607,7 +657,7 @@ $(document).on('appReady', function(e, lang) {
                 $('#jamf-profs-cnt').text(profilesdata.length);
                 $('#jamf-profs-cnt2').text(profilesdata.length);
                 // Make the table framework
-                var configprofilesrows = '<h4>'+i18n.t('jamf.profiles_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var configprofilesrows = '<h4>'+i18n.t('jamf.profiles_scope')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/OSXConfigurationProfiles.html" title="Configure Configuration Profiles"><i class="fa fa-cog"></i> '+i18n.t("jamf.configuration_profiles")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 // Make the table framework
                 if (parseInt(profilesdata.length) == 0 ){
                     configprofilesrows = configprofilesrows+'<tr><td>'+i18n.t('jamf.no_profiles')+'</td></tr>';   
@@ -688,7 +738,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of policies
                 $('#jamf-policies-cnt').text(policiesdata.length);
                 // Make the table framework
-                var policiesrows = '<h4>'+i18n.t('jamf.policies_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.triggers')+'</th>'
+                var policiesrows = '<h4>'+i18n.t('jamf.policies_scope')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/policies.html" title="Configure Policies"><i class="fa fa-cog"></i> '+i18n.t("jamf.policies_management")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.triggers')+'</th>'
                 if (parseInt(policiesdata.length) == 0 ){
                         policiesrows = policiesrows+'<tr><td>'+i18n.t('jamf.no_policies')+'</td></tr>';   
                 } else {
@@ -706,7 +756,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of eBooks
                 $('#jamf-ebooks-cnt').text(ebooksdata.length);
                 // Make the table framework
-                var ebooksrows = '<h4>'+i18n.t('jamf.ebooks_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var ebooksrows = '<h4>'+i18n.t('jamf.ebooks_scope')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/eBooks.html" title="Configure eBooks"><i class="fa fa-cog"></i> '+i18n.t("jamf.ebooks_management")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 if (parseInt(ebooksdata.length) == 0 ){
                         ebooksrows = ebooksrows+'<tr><td>'+i18n.t('jamf.no_ebooks')+'</td></tr>';   
                 } else {
@@ -724,7 +774,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of Mac App Store Apps
                 $('#jamf-macapps-cnt').text(macappssdata['installed'].length);
                 // Make the table framework
-                var macappsrows = '<h4>'+i18n.t('jamf.mac_apps_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var macappsrows = '<h4>'+i18n.t('jamf.app_store')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/macApps.html" title="Configure Mac App Store Applications"><i class="fa fa-cog"></i> '+i18n.t("jamf.mac_app_store_applications_history")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 if (parseInt(macappssdata.length) == 0 ){
                         macappsrows = macappsrows+'<tr><td>'+i18n.t('jamf.no_mac_apps')+'</td></tr>';   
                 } else {
@@ -738,6 +788,59 @@ $(document).on('appReady', function(e, lang) {
                     })
                 }
                 $('#Jamf-MacApps-Table').html(macappsrows+"</tbody></table>") // Close table framework and assign to HTML ID
+                
+                // Create a placeholder for Jamf App Catalog
+                var jamfAppsRows = '<h4>'+i18n.t('jamf.jamf_app_catalog')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/view/computers/mac-apps/app-installers/deployments" title="Configure Jamf App Catalog"><i class="fa fa-cog"></i> '+i18n.t("jamf.jamf_app_catalog")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                
+                // Process Jamf App Catalog data if available
+                if(data['jamf_app_catalog_apps_management'] && data['jamf_app_catalog_apps_management'] != null && data['jamf_app_catalog_apps_management'] != 'null'){
+                    var jamfAppsData = JSON.parse(data['jamf_app_catalog_apps_management']);
+                    
+                    // Handle both array and object formats
+                    if (jamfAppsData && (jamfAppsData.length > 0 || Object.keys(jamfAppsData).length > 0)) {
+                        // Check if we need to unwrap from results property
+                        if (jamfAppsData.results) {
+                            jamfAppsData = jamfAppsData.results;
+                        }
+                        
+                        // Handle if data is in an array
+                        if (Array.isArray(jamfAppsData)) {
+                            $.each(jamfAppsData, function(i,d){
+                                // Generate rows from data
+                                var appName = d.name || d.application?.name || d.title || 'Unknown App';
+                                var appVersion = d.version || d.application?.version || '';
+                                jamfAppsRows = jamfAppsRows + '<tr><td>' + appName + (appVersion ? ' (' + appVersion + ')' : '') + '</td></tr>';
+                            });
+                        } 
+                        // Handle if data is in an object with applications property
+                        else if (jamfAppsData.applications) {
+                            $.each(jamfAppsData.applications, function(i,d){
+                                var appName = d.name || d.title || 'Unknown App';
+                                var appVersion = d.version || '';
+                                jamfAppsRows = jamfAppsRows + '<tr><td>' + appName + (appVersion ? ' (' + appVersion + ')' : '') + '</td></tr>';
+                            });
+                        }
+                        // Handle if it's another object format
+                        else if (typeof jamfAppsData === 'object') {
+                            console.log("Jamf App Catalog data format:", jamfAppsData);
+                            // Try to extract some data from any possible format
+                            for (var key in jamfAppsData) {
+                                if (typeof jamfAppsData[key] === 'object') {
+                                    var appObject = jamfAppsData[key];
+                                    var appName = appObject.name || appObject.title || appObject.displayName || key;
+                                    var appVersion = appObject.version || '';
+                                    jamfAppsRows = jamfAppsRows + '<tr><td>' + appName + (appVersion ? ' (' + appVersion + ')' : '') + '</td></tr>';
+                                }
+                            }
+                        }
+                    } else {
+                        jamfAppsRows += '<tr><td>'+i18n.t('jamf.no_jamf_apps')+'</td></tr>';
+                    }
+                } else {
+                    jamfAppsRows += '<tr><td>'+i18n.t('jamf.no_jamf_apps')+'</td></tr>';
+                }
+                
+                $('#Jamf-JamfApps-Table').html(jamfAppsRows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
                 
             // Make Managed Preferences table
@@ -746,7 +849,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of Managed Preferences
                 $('#jamf-manprefs-cnt').text(manprefsdata.length);
                 // Make the table framework
-                var manprefsrows = '<h4>'+i18n.t('jamf.preferences_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var manprefsrows = '<h4>'+i18n.t('jamf.preferences_scope')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/OSXConfigurationProfiles.html" title="Configure Managed Preferences"><i class="fa fa-cog"></i> '+i18n.t("jamf.managed_preference_profiles_management")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 if (parseInt(manprefsdata.length) == 0 ){
                         manprefsrows = manprefsrows+'<tr><td>'+i18n.t('jamf.no_preferences')+'</td></tr>';   
                 } else {
@@ -764,7 +867,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of Restricted Software
                 $('#jamf-restsoft-cnt').text(restrictedsoftdata.length);
                 // Make the table framework
-                var restrictedsoftrows = '<h4>'+i18n.t('jamf.restricted_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var restrictedsoftrows = '<h4>'+i18n.t('jamf.restricted_scope')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/restrictedSoftware.html" title="Configure Restricted Software"><i class="fa fa-cog"></i> '+i18n.t("jamf.restricted_software_management")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 if (parseInt(restrictedsoftdata.length) == 0 ){
                         restrictedsoftrows = restrictedsoftrows+'<tr><td>'+i18n.t('jamf.no_restricted')+'</td></tr>';   
                 } else {
@@ -775,14 +878,14 @@ $(document).on('appReady', function(e, lang) {
                 }
                 $('#Jamf-RestrictedSoftware-Table').html(restrictedsoftrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-    
+            
             // Smart Groups Table
             if(data['smart_groups_management'] && data['smart_groups_management'] != null && data['smart_groups_management'] != 'null'){
                 var groupssmartdata = JSON.parse(data['smart_groups_management']);
                 // Set count of Smart Groups
                 $('#jamf_groups_smart_button').text(i18n.t('jamf.smart_groups_management')+' ('+groupssmartdata.length+')');
                 // Make the table framework
-                var groupssmartrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var groupssmartrows = '<h4>'+i18n.t('jamf.smart_groups_management')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/smartComputerGroups.html" title="Configure Smart Groups"><i class="fa fa-cog"></i> '+i18n.t("jamf.smart_groups_management")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 if (parseInt(groupssmartdata.length) == 0 ){
                         groupssmartrows = groupssmartrows+'<tr><td>'+i18n.t('jamf.no_smart_groups')+'</td></tr>';   
                 } else {
@@ -800,7 +903,7 @@ $(document).on('appReady', function(e, lang) {
                 // Set count of Static Groups
                 $('#jamf_groups_static_button').text(i18n.t('jamf.static_groups_management')+' ('+groupsstaticdata.length+')');
                 // Make the table framework
-                var groupsstaticrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                var groupsstaticrows = '<h4>'+i18n.t('jamf.static_groups_management')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/staticComputerGroups.html" title="Configure Static Groups"><i class="fa fa-cog"></i> '+i18n.t("jamf.static_groups_management")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
                 if (parseInt(groupsstaticdata.length) == 0 ){
                         groupsstaticrows = groupsstaticrows+'<tr><td>'+i18n.t('jamf.no_static_groups')+'</td></tr>';   
                 } else {
@@ -823,7 +926,7 @@ $(document).on('appReady', function(e, lang) {
                 }
                 $('#jamf_software_titles_button').text(i18n.t('jamf.software_titles')+' ('+softwaretitlescount+')');
                 // Make the table framework
-                var softwaretitlesrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.latest_version')+'</th><th>'+i18n.t('jamf.installed_version')+'</th>'
+                var softwaretitlesrows = '<h4>'+i18n.t('jamf.software_titles')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/patch.html" title="Configure Software Titles"><i class="fa fa-cog"></i> '+i18n.t("jamf.software_titles")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.latest_version')+'</th><th>'+i18n.t('jamf.installed_version')+'</th>'
                 if (softwaretitlescount == 0 ){
                         softwaretitlesrows = softwaretitlesrows+'<tr><td>'+i18n.t('jamf.no_software_title')+'</td><td></td><td></td></tr>';   
                 } else {
@@ -846,7 +949,7 @@ $(document).on('appReady', function(e, lang) {
                 }
                 $('#jamf_patch_policies_button').text(i18n.t('jamf.patch_policies')+' ('+patchpoliciescount+')');
                 // Make the table framework
-                var patchpoliciesrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.id')+'</th>'
+                var patchpoliciesrows = '<h4>'+i18n.t('jamf.patch_policies')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/patch.html" title="Configure Patch Policies"><i class="fa fa-cog"></i> '+i18n.t("jamf.patch_policies")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.id')+'</th>'
                 if (patchpoliciescount == 0 ){
                         patchpoliciesrows = patchpoliciesrows+'<tr><td>'+i18n.t('jamf.no_patch_policies')+'</td><td></td>';   
                 } else {
@@ -870,7 +973,7 @@ $(document).on('appReady', function(e, lang) {
                 }
                 
                 // Make the table framework using DataTables
-                var policylogsrows = '<h4>'+i18n.t('jamf.policy_logs')+'</h4>';
+                var policylogsrows = '<h4>'+i18n.t('jamf.policy_logs')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computers.html?id='+data['jamf_id']+'&o=r&v=history" title="View History"><i class="fa fa-history"></i> '+i18n.t("jamf.history")+'</a></h4>';
                 policylogsrows += '<table class="table table-striped table-condensed table-bordered" id="jamf-policy-logs-table">';
                 policylogsrows += '<thead><tr><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.date')+'</th><th>'+i18n.t('jamf.status')+'</th><th>'+i18n.t('jamf.username')+'</th></tr></thead>';
                 policylogsrows += '<tbody>';
@@ -972,7 +1075,7 @@ $(document).on('appReady', function(e, lang) {
 			$('#jamf_sus').text(data['sus']);
 			$('#jamf_netboot_server').text(data['netboot_server']);
 			$('#jamf_udid').text(data['udid']);
-			$('#jamf_username').text(data['username']);
+			$('#jamf_username').html('<a target="_blank" href="'+jamf_server+'/users.html?query='+encodeURIComponent(data['username'])+'" title="'+i18n.t("jamf.view_in_jamf")+'">'+data['username']+'</a>');
 			$('#jamf_realname').text(data['realname']);
 			$('#jamf_email_address').text(data['email_address']);
 			$('#jamf_position').text(data['position']);
@@ -1090,6 +1193,29 @@ $(document).on('appReady', function(e, lang) {
 		e.preventDefault();
 		$(this).tab('show');
 		history.pushState(null, null, '#tab_jamf-tab');
+	});
+	
+	// Custom handler just for the dual pane buttons
+	$('#jamf_jamf_apps_button, #jamf_app_store_button, #jamf_groups_smart_button, #jamf_groups_static_button, #jamf_software_titles_button, #jamf_patch_policies_button').each(function() {
+		// Store the original click handler
+		var originalHandler = $(this).attr('onclick');
+		
+		// Remove the default onclick attribute
+		$(this).removeAttr('onclick');
+		
+		// Add our custom click handler
+		$(this).click(function(e) {
+			e.preventDefault();
+			
+			// Show the tab
+			var targetTab = $(this).attr('href');
+			$(targetTab).tab('show');
+			
+			// Reset URL
+			history.pushState(null, null, '#tab_jamf-tab');
+			
+			return false;
+		});
 	});
 
 });

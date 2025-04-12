@@ -113,6 +113,7 @@ class Jamf_model extends \Model {
         $this->rs['policies_management'] = '';
         $this->rs['ebooks_management'] = '';
         $this->rs['mac_app_store_apps_management'] = '';
+        $this->rs['jamf_app_catalog_apps_management'] = '';
         $this->rs['managed_preference_profiles_management'] = '';
         $this->rs['restricted_software_management'] = '';
         $this->rs['smart_groups_management'] = '';

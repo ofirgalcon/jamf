@@ -31,6 +31,8 @@ new Jamf_model;
             <th data-i18n="jamf.comands_pending" data-colname='jamf.comands_pending'></th>
             <th data-i18n="jamf.comands_failed" data-colname='jamf.comands_failed'></th>
             <th data-i18n="jamf.mdm_capable" data-colname='jamf.mdm_capable'></th>
+            <!-- Commented out last_cloud_backup_date_epoch as requested -->
+            <!--<th data-i18n="jamf.last_cloud_backup_date_epoch" data-colname='jamf.last_cloud_backup_date_epoch'></th>-->
             <th data-i18n="jamf.last_contact_time_epoch" data-colname='jamf.last_contact_time_epoch'></th>
             <th data-i18n="jamf.last_enrolled_date_epoch" data-colname='jamf.last_enrolled_date_epoch'></th>
             <th data-i18n="jamf.report_date_epoch" data-colname='jamf.report_date_epoch'></th>
@@ -175,32 +177,32 @@ new Jamf_model;
 
 	        	// managed
 	        	var colvar=$('td:eq(3)', nRow).html();
-	        	colvar = colvar == 1 ? i18n.t('yes') :
-	        	(colvar == 0 ? i18n.t('no') : '')
+	        	colvar = colvar == 1 ? '<span class="label label-success">' + i18n.t('yes') + '</span>' :
+	        	(colvar == 0 ? '<span class="label label-danger">' + i18n.t('no') + '</span>' : '')
 	        	$('td:eq(3)', nRow).html(colvar)
 
 	        	// enrolled_via_dep
 	        	var colvar=$('td:eq(4)', nRow).html();
-	        	colvar = colvar == 1 ? i18n.t('yes') :
-	        	(colvar == 0 ? i18n.t('no') : '')
+	        	colvar = colvar == 1 ? '<span class="label label-success">' + i18n.t('yes') + '</span>' :
+	        	(colvar == 0 ? '<span class="label label-danger">' + i18n.t('no') + '</span>' : '')
 	        	$('td:eq(4)', nRow).html(colvar)
 
 	        	// user_approved_enrollment
 	        	var colvar=$('td:eq(5)', nRow).html();
-	        	colvar = colvar == '1' ? i18n.t('yes') :
-	        	(colvar === '0' ? i18n.t('no') : '')
+	        	colvar = colvar == '1' ? '<span class="label label-success">' + i18n.t('yes') + '</span>' :
+	        	(colvar === '0' ? '<span class="label label-danger">' + i18n.t('no') + '</span>' : '')
 	        	$('td:eq(5)', nRow).html(colvar)
 
 	        	// user_approved_mdm
 	        	var colvar=$('td:eq(6)', nRow).html();
-	        	colvar = colvar == '1' ? i18n.t('yes') :
-	        	(colvar === '0' ? i18n.t('no') : '')
+	        	colvar = colvar == '1' ? '<span class="label label-success">' + i18n.t('yes') + '</span>' :
+	        	(colvar === '0' ? '<span class="label label-danger">' + i18n.t('no') + '</span>' : '')
 	        	$('td:eq(6)', nRow).html(colvar)
 
 	        	// disable_automatic_login
 	        	var colvar=$('td:eq(12)', nRow).html();
-	        	colvar = colvar == '1' ? i18n.t('yes') :
-	        	(colvar === '0' ? i18n.t('no') : '')
+	        	colvar = colvar == '1' ? '<span class="label label-success">' + i18n.t('yes') + '</span>' :
+	        	(colvar === '0' ? '<span class="label label-danger">' + i18n.t('no') + '</span>' : '')
 	        	$('td:eq(12)', nRow).html(colvar)
 
 	        	// is_purchased
@@ -211,8 +213,8 @@ new Jamf_model;
 
 	        	// mdm_capable
 	        	var colvar=$('td:eq(17)', nRow).html();
-	        	colvar = colvar == '1' ? i18n.t('yes') :
-	        	(colvar === '0' ? i18n.t('no') : '')
+	        	colvar = colvar == '1' ? '<span class="label label-success">' + i18n.t('yes') + '</span>' :
+	        	(colvar === '0' ? '<span class="label label-danger">' + i18n.t('no') + '</span>' : '')
 	        	$('td:eq(17)', nRow).html(colvar)
 
 	        	// Format last_contact_time_epoch timestamp

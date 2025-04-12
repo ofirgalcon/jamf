@@ -283,6 +283,10 @@ class Jamf_helper
             // Computer Management
             $Jamf_model->ebooks_management = json_encode($json->computer_management->ebooks); // Encode the ebooks array for processing by the client tab
             $Jamf_model->mac_app_store_apps_management = json_encode($json->computer_management->mac_app_store_apps); // Encode the mac_app_store_apps array for processing by the client tab
+            
+            // Remove the Jamf App Catalog data retrieval from here as it's duplicated later in the code
+            // and this implementation doesn't handle the JSON correctly
+            
             $Jamf_model->managed_preference_profiles_management = json_encode($json->computer_management->managed_preference_profiles); // Encode the managed_preference_profiles array for processing by the client tab
             $Jamf_model->restricted_software_management = json_encode($json->computer_management->restricted_software); // Encode the restricted_software array for processing by the client tab
             $Jamf_model->policies_management = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
@@ -372,6 +376,42 @@ class Jamf_helper
             $Jamf_model->comands_completed = count($json->computer_history->commands->completed); // Count completed commands
             $Jamf_model->comands_pending = count($json->computer_history->commands->pending); // Count pending commands
             $Jamf_model->comands_failed = count($json->computer_history->commands->failed); // Count failed commands
+        }
+
+        // Get app-installers data from Jamf Pro API - using the working endpoint for Jamf Pro 11.15.1
+        $url = "{$jamf_server}/api/v1/app-installers/deployments";
+        $jamf_app_installers_result = $this->get_jamf_url($url);
+
+        // Only process if there is a result
+        if ($jamf_app_installers_result) {
+            // Verify the result is valid JSON before storing it
+            $json_test = json_decode((string)$jamf_app_installers_result);
+            if ($json_test && json_last_error() === JSON_ERROR_NONE) {
+                // Store the raw JSON response since it's already valid JSON
+                $Jamf_model->jamf_app_catalog_apps_management = $jamf_app_installers_result;
+            } else {
+                // Not valid JSON, store an empty array
+                $Jamf_model->jamf_app_catalog_apps_management = "[]";
+            }
+        } else {
+            // Try to get computer-specific app-installers 
+            $url = "{$jamf_server}/api/v1/app-installers/deployments?computerIds={$Jamf_model->jamf_id}";
+            $jamf_computer_app_installers_result = $this->get_jamf_url($url);
+            
+            if ($jamf_computer_app_installers_result) {
+                // Verify the result is valid JSON before storing it
+                $json_test = json_decode((string)$jamf_computer_app_installers_result);
+                if ($json_test && json_last_error() === JSON_ERROR_NONE) {
+                    // Store the raw JSON response since it's already valid JSON
+                    $Jamf_model->jamf_app_catalog_apps_management = $jamf_computer_app_installers_result;
+                } else {
+                    // Not valid JSON, store an empty array
+                    $Jamf_model->jamf_app_catalog_apps_management = "[]";
+                }
+            } else {
+                // Set empty array if no app-installers data available
+                $Jamf_model->jamf_app_catalog_apps_management = "[]";
+            }
         }
 
         // Save the data, Protecc the data
